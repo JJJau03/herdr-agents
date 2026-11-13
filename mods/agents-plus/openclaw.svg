@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="100%" height="100%">
+  <defs>
+    <!-- Background-free shadow underneath the legs for grounding -->
+    <radialGradient id="dropShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Main Red Body 3D Gradient -->
+    <radialGradient id="bodyGrad" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ff4d4d" />
+      <stop offset="50%" stop-color="#d61f1f" />
+      <stop offset="85%" stop-color="#8a0808" />
+      <stop offset="100%" stop-color="#540000" />
+    </radialGradient>
+
+    <!-- Appendages Red Gradients -->
+    <radialGradient id="leftArmGrad" cx="30%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#ff4d4d" />
+      <stop offset="65%" stop-color="#b81414" />
+      <stop offset="100%" stop-color="#5e0202" />
+    </radialGradient>
+    
+    <radialGradient id="rightArmGrad" cx="70%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#ff4d4d" />
+      <stop offset="65%" stop-color="#b81414" />
+      <stop offset="100%" stop-color="#5e0202" />
+    </radialGradient>
+
+    <linearGradient id="legGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a81111" />
+      <stop offset="60%" stop-color="#730505" />
+      <stop offset="100%" stop-color="#3d0000" />
+    </linearGradient>
+
+    <linearGradient id="antennaGradLeft" x1="1" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#ff4d4d" />
+      <stop offset="50%" stop-color="#c41a1a" />
+      <stop offset="100%" stop-color="#5e0202" />
+    </linearGradient>
+
+    <linearGradient id="antennaGradRight" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ff4d4d" />
+      <stop offset="50%" stop-color="#c41a1a" />
+      <stop offset="100%" stop-color="#5e0202" />
+    </linearGradient>
+
+    <!-- 3D Eyes Gradients -->
+    <radialGradient id="eyeSocket" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2a2a2a" />
+      <stop offset="75%" stop-color="#0a0a0a" />
+      <stop offset="100%" stop-color="#000000" />
+    </radialGradient>
+
+    <radialGradient id="eyeIris" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#99ffff" />
+      <stop offset="30%" stop-color="#00e5ff" />
+      <stop offset="70%" stop-color="#00838f" />
+      <stop offset="100%" stop-color="#004d40" />
+    </radialGradient>
+
+    <radialGradient id="eyeGlint" cx="30%" cy="30%" r="40%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Subtle overlays for volumetric specular depth -->
+    <radialGradient id="bodyHighlight" cx="30%" cy="25%" r="40%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Ground contact shadow, fades into absolute transparency -->
+  <ellipse cx="500" cy="940" rx="190" ry="25" fill="url(#dropShadow)" />
+
+  <!-- Left Antenna -->
+  <path d="M 360,165 
+           C 310,135 250,110 215,115 
+           C 200,117 195,130 205,135 
+           C 225,145 285,155 330,222 
+           Z" fill="url(#antennaGradLeft)" />
+
+  <!-- Right Antenna -->
+  <path d="M 640,165 
+           C 690,135 750,110 785,115 
+           C 800,117 805,130 795,135 
+           C 775,145 715,155 670,222 
+           Z" fill="url(#antennaGradRight)" />
+
+  <!-- Left Leg -->
+  <path d="M 370,820 
+           L 440,820 
+           L 440,920 
+           C 440,940 370,940 370,920 
+           Z" fill="url(#legGrad)" />
+
+  <!-- Right Leg -->
+  <path d="M 560,820 
+           L 630,820 
+           L 630,920 
+           C 630,940 560,940 560,920 
+           Z" fill="url(#legGrad)" />
+
+  <!-- Left Arm (3D Chubby Mitten) -->
+  <path d="M 180,420 
+           C 90,410 20,460 20,535 
+           C 20,610 90,650 180,590 
+           C 165,540 165,470 180,420 
+           Z" fill="url(#leftArmGrad)" />
+
+  <!-- Right Arm (3D Chubby Mitten) -->
+  <path d="M 820,420 
+           C 910,410 980,460 980,535 
+           C 980,610 910,650 820,590 
+           C 835,540 835,470 820,420 
+           Z" fill="url(#rightArmGrad)" />
+
+  <!-- Main Round Body -->
+  <circle cx="500" cy="510" r="390" fill="url(#bodyGrad)" />
+  <circle cx="500" cy="510" r="390" fill="url(#bodyHighlight)" />
+
+  <!-- Left Eye Outer Socket -->
+  <circle cx="370" cy="360" r="58" fill="url(#eyeSocket)" />
+  <!-- Left Eye Iris -->
+  <circle cx="370" cy="360" r="34" fill="url(#eyeIris)" />
+  <!-- Left Eye Sparkle Glints -->
+  <circle cx="360" cy="350" r="14" fill="url(#eyeGlint)" />
+  <circle cx="355" cy="345" r="4" fill="#ffffff" opacity="0.8" />
+
+  <!-- Right Eye Outer Socket -->
+  <circle cx="630" cy="360" r="58" fill="url(#eyeSocket)" />
+  <!-- Right Eye Iris -->
+  <circle cx="630" cy="360" r="34" fill="url(#eyeIris)" />
+  <!-- Right Eye Sparkle Glints -->
+  <circle cx="620" cy="350" r="14" fill="url(#eyeGlint)" />
+  <circle cx="615" cy="345" r="4" fill="#ffffff" opacity="0.8" />
+</svg>

@@ -1,0 +1,38 @@
+# macOS and editor files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Herdr-generated development files and errors
+gpui-kit.d.ts
+herdr.d.ts
+jsconfig.json
+*.error
+
+# Keep local test scripts out of the shared repository
+/tests/
+/scripts/check-mirrors.sh
+
+# Python and JavaScript build/cache files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+node_modules/
+coverage/
+
+# Backups, logs, local secrets, and runtime data
+*.bak
+*.log
+.env
+.env.*
+!.env.example
+/layouts/.state/
+/data/
+/shared.json
+/settings.json
+/view.json
+/window.json
+/windows.json
+/seen.json
+/installed.json

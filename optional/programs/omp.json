@@ -1,0 +1,9 @@
+{
+  "programs": {
+    "omp": {
+      "name": "Oh My Pi",
+      "icon": "mods/new-menu-plus/oh-my-pi.png",
+      "tint": false
+    }
+  }
+}
