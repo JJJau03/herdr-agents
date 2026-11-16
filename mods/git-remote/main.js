@@ -263,7 +263,7 @@ export default class GitHub extends View {
       .catch((e) => notify({ title: "Failed to create worktree", body: String(e?.message ?? e), level: "error" }));
   }
   inlineMerge(item, method, cx) {
-    if (this.mergingNum) return;
+    if (this.mergingNum || this.entry().error || this.entry().loading || item.limitedDetails || !item.headRefOid) return;
     this.mergingNum = item.number;
     cx.spawn(async (cx) => {
       try {
@@ -323,7 +323,7 @@ export default class GitHub extends View {
     const p = primer(t), [g, color, stateLabel] = prState(item, p), checks = item.statusCheckRollup ? checksOf(item) : null;
     const isOpen = String(item.state).toUpperCase() === "OPEN";
     const conflict = item.mergeable === "CONFLICTING";
-    const blocked = !isOpen || item.isDraft || conflict || !item.headRefOid || checks?.state === "failure" || checks?.state === "pending";
+    const blocked = Boolean(this.entry().error || this.entry().loading) || !isOpen || item.isDraft || conflict || !item.headRefOid || checks?.state === "failure" || checks?.state === "pending";
     const mergeExpanded = this.inlineMergeNum === item.number;
     const selected = this.selectedIdx === idx;
 
@@ -509,6 +509,14 @@ export default class GitHub extends View {
     }
     if (shown.length > this.limit) {
       rows.push(h_flex().flex_none().py(10).justify_center().child(button("more", `Load more (${shown.length - this.limit} remaining)`, t, (_e, cx) => { this.limit += PAGE; cx.notify(); }, { small: true })));
+    }
+    if (tab === "prs" && allItems.some((item) => item.limitedDetails)) {
+      rows.unshift(div().id("pr-limited-details").mx(10).my(4).p(8).rounded(6).bg(t.raised).text_color(t.muted).text_size(11.5)
+        .child("GitHub returned limited details. Open a PR for full details; inline merge is unavailable until refreshed."));
+    }
+    if (e.error && allItems.length) {
+      rows.unshift(div().id("github-stale-data").mx(10).my(4).p(8).rounded(6).bg(t.raised).text_color(t.muted).text_size(11.5)
+        .child("Refresh failed. Showing saved results; they may be out of date. Inline merge is unavailable."));
     }
     return v_flex().id(`list-${tab}`).flex_1().min_h(0).overflow_y_scrollbar().py(6).children(rows);
   }

@@ -81,6 +81,10 @@ export async function checkouts(extra = []) {
 const ISSUE = "number,title,body,url,state,stateReason,labels,assignees,author,createdAt,updatedAt,comments,milestone";
 const SEARCH_ISSUE = "number,title,url,state,labels,assignees,author,createdAt,updatedAt,commentsCount,repository";
 const PR = "number,title,url,state,isDraft,labels,assignees,author,createdAt,updatedAt,headRefName,baseRefName,headRefOid,mergeable,changedFiles,reviewDecision,statusCheckRollup,comments,additions,deletions,mergedAt";
+// Avoid the expensive checks, mergeability and comment fields when GitHub's
+// GraphQL service fails. The list must not offer a merge from partial data.
+const PR_LITE = "number,title,url,state,isDraft,labels,author,createdAt,updatedAt,headRefName,baseRefName";
+const transientGithubError = (error) => /\bHTTP\s+(?:500|502|503|504)\b/i.test(String(error?.message ?? error));
 const SEARCH_PR = "number,title,url,state,isDraft,labels,author,createdAt,updatedAt,commentsCount,repository";
 const RUN = "databaseId,number,displayTitle,status,conclusion,workflowName,headBranch,headSha,event,createdAt,updatedAt,startedAt,url,attempt";
 
@@ -104,7 +108,15 @@ export const load = {
     if (repo) {
       const args = ["pr", "list", "-R", repo, "--state", state, "--limit", "100", "--json", PR];
       if (mine) args.push("--author", "@me");
-      return norm(await ghJson(args), repo);
+      try {
+        return norm(await ghJson(args), repo);
+      } catch (error) {
+        if (!transientGithubError(error)) throw error;
+        const lighter = args.map((arg) => arg === PR ? PR_LITE : arg);
+        const rows = await ghJson(lighter);
+        // Do not allow inline merge until the full PR detail has been loaded.
+        return norm(rows.map((row) => ({ ...row, headRefOid: null, limitedDetails: true })), repo);
+      }
     }
     const args = ["search", "prs", ...owners.flatMap((o) => ["--owner", o]), "--state", state === "merged" ? "closed" : state, "--sort", "updated", "--limit", "100", "--json", SEARCH_PR];
     if (state === "merged") args.push("--merged");

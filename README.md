@@ -1,6 +1,6 @@
 # Herdr Agents
 
-A terminal-focused [Herdr](https://herdr.dev/) layout for working with multiple coding agents. Keep your terminals front and center, see spaces and agent status in the sidebar, and open Files or Git only when you need them.
+A terminal-focused [Herdr](https://herdr.dev/) layout for working with multiple coding agents. Keep your terminals front and center, see spaces and agent status in the sidebar, open Files or Git only when you need them, and launch Insights in a full tab.
 
 ![Herdr Agents layout](preview.png)
 
@@ -9,14 +9,15 @@ A terminal-focused [Herdr](https://herdr.dev/) layout for working with multiple 
 - **Spaces and agents:** Browse projects and worktrees with compact icons, and see reported agent states in the sidebar without count badges on space rows.
 - **Agent launcher:** The tab-bar **+** menu includes OpenClaw, Oh My Pi (`omp`), and Hermes Agent (`hermes`) alongside Herdr's built-in choices. Availability is checked on the selected space's machine. Available number shortcuts are assigned without renumbering the built-in agents.
 - **OpenClaw gateway:** See whether the default gateway is running locally or on a connected remote machine. The service indicator reports gateway availability, not agent activity. Clicking it focuses an identifiable existing foreground OpenClaw process in a Herdr pane, or starts `openclaw` in `~/.openclaw` if none is found. Processes in other terminal applications or hidden inside multiplexers may not be identifiable.
-- **On-demand Files and Git:** Open the side panel when needed. Git includes Changes, Graph, PRs, Issues, CI, Review, Pull and Push. Pull is fast-forward-only; Push targets the configured upstream and never force-pushes. The latest Push result can be reopened from its notification detail button.
+- **On-demand Files and Git:** Open the right-hand panel when needed. Git includes Changes, Graph, PRs, Issues, CI, Review, Pull and Push. Pull is fast-forward-only; Push targets the configured upstream and never force-pushes. The latest Push result can be reopened from its notification detail button. If GitHub returns a temporary server error, the PR list can fall back to fewer details; inline merge stays disabled until full data is available.
+- **Insights:** Open a full-size dashboard tab from the button beside Files and Git. It shows local agent token usage, activity and model breakdowns. Repeated clicks return to the existing Insights tab in the current space rather than opening another.
 - **Usage:** View available Claude and Codex quota information. Older Claude observations are labeled stale, expired windows are removed, and stale readings do not trigger quota alerts.
 - **Worktree safety:** Automatic worktree cleanup is disabled. Explicit worktree actions can still create or remove worktrees.
 
 ## Requirements
 
 - Herdr app with its bundled mods and icons, including `workspace-chrome`, `changes`, and `pane`. Tested with Herdr 0.1.15 on macOS; other platforms have not been fully tested.
-- Python 3 and Git for the features that use them. Some integrations also require `gh`, Codex, or `macmon`.
+- Python 3 and Git for the features that use them. Insights requires Node.js 22.15 or newer; some other integrations require `gh`, Codex, or `macmon`.
 - OpenClaw, Oh My Pi, or Hermes Agent installed on a machine to use the corresponding launcher entry there. OpenClaw launching requires Bash and `openclaw` on that machine's login-shell `PATH`.
 
 ## Installation
@@ -27,7 +28,7 @@ From this repository's directory, review and run:
 ./install.sh
 ```
 
-The installer copies `layouts/herdr-agents.json` and the included mods into `${HERDR_APP_HOME:-~/.config/herdr-app}`. It checks all destination names first and **refuses to install if any already exist**. It does not overwrite existing layouts or mods, modify `keys.json`, `programs.json` or settings, or switch your active layout. Copying is not transactional: a failure after the preflight can leave a partial installation.
+The installer copies `layouts/herdr-agents.json` and the included mods into `${HERDR_APP_HOME:-~/.config/herdr-app}`. It checks all destination names first and **refuses to install if any already exist**, including an existing `insights` mod. It does not overwrite existing layouts or mods, modify `keys.json`, `programs.json` or settings, or switch your active layout. Copying is not transactional: a failure after the preflight can leave a partial installation.
 
 Then check the installed mods and select **herdr-agents** with Herdr's layout switcher:
 
@@ -44,6 +45,7 @@ To try the installer without changing your existing configuration, set `HERDR_AP
 ### Optional integrations
 
 - **Oh My Pi icon:** To show the logo in Herdr's terminal headers and agent lists, merge [`optional/programs/omp.json`](optional/programs/omp.json) into your existing `~/.config/herdr-app/programs.json`, or create that file if it does not exist. Preserve other entries. The **+** menu logo works without this step.
+- **Insights runtime:** The included Insights dashboard uses `node` from Herdr's `PATH` by default. If Herdr cannot find Node, configure the executable path for your machine in `${HERDR_APP_HOME:-~/.config/herdr-app}/mods/insights/runtime.json` as `{"node":"/absolute/path/to/node"}`; see the [upstream installation guide](https://github.com/GaganSD/coding-agent-toolkit/blob/main/herdr-insights/INSTALL.md). No machine-specific runtime path is included in this package.
 - **Older Pi versions:** An optional remote-terminal status compatibility extension is documented in [`optional/pi/README.md`](optional/pi/README.md). Do not install it alongside a Pi version with native Herdr status reporting.
 - **Claude usage:** Recent quota values can be read from `~/.claude/.statusline.input` when a separately configured Claude Code status line writes `rate_limits` there. This package does not configure or change your status line. The quota panel checks that local input every five seconds for new observations and falls back to the usage endpoint when recent data is unavailable, respecting rate-limit cooldowns. If the endpoint is unavailable, the last valid observation may remain visible for up to six hours, marked stale when appropriate.
 
@@ -55,6 +57,7 @@ Herdr mods can run programs and access files or networks. Review the included co
 
 - The launcher checks for agent commands in a Bash login shell on the selected machine. OpenClaw gateway checks run every 30 seconds and inspect the service state and current user's process arguments. Clicking its service row inspects Herdr terminal metadata and foreground process arguments to find an existing pane; it does not read terminal contents or messages. Named OpenClaw profiles and Windows service detection are not fully supported.
 - Git may automatically fetch a configured upstream while the app is active, even if a previously opened panel is hidden. Explicit actions can push, pull, commit, create or remove worktrees, or interact with GitHub.
+- Insights reads local coding-agent session files on the computer running Herdr to calculate usage statistics and maintains local data under the Herdr app home. It does not automatically aggregate sessions from connected remote machines.
 - The quota mod reads the local Claude status-line input. Its helper may read local credential and account files, query Codex's app-server, and contact Anthropic's usage endpoint; it stores a cache under `~/.cache/herdr-quota`. Other quota providers may read the local OMP database.
 - The system-monitor popup may contact `api.ipify.org`.
 

@@ -12,6 +12,12 @@ mods/new-menu-plus/main.js is adapted from Herdr's built-in new-menu mod
 Version 2.0. The menu has been modified to add OpenClaw and Oh My Pi entries.
 The full license is included in LICENSE-APACHE-2.0.txt.
 
+mods/insights/ is from GaganSD/coding-agent-toolkit, herdr-insights
+(https://github.com/GaganSD/coding-agent-toolkit/tree/main/herdr-insights),
+revision c424bd8d2f234e28cca25120fd4cdad0a4149c0d, licensed under MIT.
+Its copyright and full license are included in mods/insights/LICENSE. Local
+runtime configuration and generated development files are not included.
+
 mods/new-menu-plus/hermes.svg was supplied by the user from zonalogo.com.
 Redistribution permission and trademark usage have not been verified; review
 these rights before publishing the draft.

@@ -11,6 +11,20 @@ function find(node, id) {
   return null;
 }
 
+// Match the Insights toolbar: one dashboard tab per space, reused on repeat clicks.
+function showInsights(space) {
+  if (!space) return;
+  const tabIds = new Set((space.tabs ?? []).map(tab => tab.id));
+  const allPanes = panes();
+  const open = allPanes.find(pane => pane.mod === "insights" && tabIds.has(pane.tab));
+  if (open) {
+    const zoomed = allPanes.find(pane => pane.tab === open.tab && pane.zoomed);
+    if (zoomed && zoomed.pane !== open.pane) run("pane.zoom", { pane: zoomed.pane });
+    return run("pane.focus", { pane: open.pane });
+  }
+  return run("tab.new", { name: "Insights", mod: "insights" });
+}
+
 export default class Tabs extends View {
   init() {
     this.scroll = ScrollHandle.new();
@@ -116,6 +130,10 @@ export default class Tabs extends View {
       .child(button("tab-new", "+", () => openOverlay({ mod: "new-menu-plus", kind: "popup", width: 250, height: 512 })))
       .when(enabled.includes("files"), el => el.child(panelButton("files", "Files", "mods/files/file.svg")))
       .child(panelButton("git", "Git", "mods/tabs-plus/graph.svg"))
+      .child(h_flex().id("insights-open").h(26).px(8).gap(5).flex_none().items_center().rounded(6)
+        .text_size(12).bg(t.chrome).text_color(t.muted).hover(s => s.bg(t.hover))
+        .on_mouse_down("left", stop).on_click(() => showInsights(space))
+        .child(svg("mods/insights/insights.svg").size(14)).child("Insights"))
       .when(w?.buttons, el => el.child(button("minimize", w.platform === "windows" ? svg("mods/tabs-plus/win-min.svg").size(16) : "−", () => run("window.minimize")))
         .child(button("maximize", w.platform === "windows" ? svg(`mods/tabs-plus/${w.maximized ? "win-restore" : "win-max"}.svg`).size(16) : "□", () => run("window.maximize")))
         .child(button("close-window", w.platform === "windows" ? svg("mods/tabs-plus/win-close.svg").size(16) : svg("mods/pane/close.svg").size(13), () => run("window.close"))));

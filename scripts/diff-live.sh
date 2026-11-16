@@ -11,6 +11,8 @@ show=0; [ "${1:-}" = "-d" ] && show=1
 bad=0
 while IFS= read -r f; do
   case "$f" in mods/*|layouts/*|keys.json|programs.json|icons/*) ;; *) continue ;; esac
+  # The draft retains Insights' upstream license; the existing live install may not.
+  [ "$f" = mods/insights/LICENSE ] && continue
   # Include new working-tree files and skip tracked files removed in the draft.
   [ -f "$f" ] || continue
   live_f="$f"
